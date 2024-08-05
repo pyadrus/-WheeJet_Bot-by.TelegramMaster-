@@ -4,8 +4,8 @@ import sys
 
 from loguru import logger
 
-from handlers.admin_handlers import register_greeting_admin_handler
-from handlers.user_handlers import register_greeting_user_handler
+from handlers.admin.admin_handlers import register_greeting_admin_handler
+from handlers.user.user_handlers import register_greeting_user_handler
 from system.dispatcher import dp, bot
 
 logger.add("logs/log.log", retention="1 days", enqueue=True)  # Логирование бота
