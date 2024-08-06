@@ -5,6 +5,7 @@ import sys
 from loguru import logger
 
 from handlers.admin.admin_handlers import register_greeting_admin_handler
+from handlers.user.instructions_handlers import register_instructions_handlers
 from handlers.user.user_handlers import register_greeting_user_handler
 from system.dispatcher import dp, bot
 
@@ -15,6 +16,7 @@ async def main() -> None:
     await dp.start_polling(bot)
     register_greeting_user_handler()  # Обработчик команды /start
     register_greeting_admin_handler()  # Обработчик команды /admin_start
+    register_instructions_handlers()  # Обработчик команды /instructions
 
 
 if __name__ == "__main__":
