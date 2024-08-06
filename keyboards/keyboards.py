@@ -12,5 +12,16 @@ def greeting_keyboard():
     return greeting_keyboards
 
 
+def instructions_keyboard():
+    rows = [
+        [InlineKeyboardButton(text='Ссылка на инструкцию', callback_data='link_to_instructions')],
+        [InlineKeyboardButton(text='Проверить / оформить гарантию', callback_data='check_out_the_warranty')],
+        [InlineKeyboardButton(text='Назад в меню', callback_data='back_to_menu')],
+    ]
+    instructions_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
+    return instructions_keyboards
+
+
 if __name__ == '__main__':
     greeting_keyboard()
+    instructions_keyboard()
