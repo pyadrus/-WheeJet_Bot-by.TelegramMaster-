@@ -22,6 +22,18 @@ def instructions_keyboard():
     return instructions_keyboards
 
 
+def check_out_the_warranty__keyboard():
+    rows = [
+        [InlineKeyboardButton(text='Ссылка на гарантию', callback_data='warranty_link')],
+        [InlineKeyboardButton(text='Принимаю условия, заполнить талон', callback_data='i_accept_the_terms_fill_out_the_form')],
+        [InlineKeyboardButton(text='Проверить гарантийный талон', callback_data='check_the_warranty_card')],
+        [InlineKeyboardButton(text='Назад в меню', callback_data='back_to_menu')],
+    ]
+    check_out_the_warranty_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
+    return check_out_the_warranty_keyboards
+
+
 if __name__ == '__main__':
     greeting_keyboard()
     instructions_keyboard()
+    check_out_the_warranty__keyboard()
