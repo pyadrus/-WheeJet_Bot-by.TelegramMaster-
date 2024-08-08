@@ -57,9 +57,20 @@ def filled_data_keyboard():
     return filled_data_keyboards
 
 
+def contact_details_to_choose_from():
+    rows = [
+        [InlineKeyboardButton(text='Телефон', callback_data='telephone')],
+        [InlineKeyboardButton(text='Почта', callback_data='mail')],
+        [InlineKeyboardButton(text='Телеграм', callback_data='telegram')],
+    ]
+    contact_details_to_choose_from_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
+    return contact_details_to_choose_from_keyboards
+
+
 if __name__ == '__main__':
     greeting_keyboard()
     instructions_keyboard()
     check_out_the_warranty_keyboard()
     guarantee_chek_keyboard()
     filled_data_keyboard()
+    contact_details_to_choose_from()

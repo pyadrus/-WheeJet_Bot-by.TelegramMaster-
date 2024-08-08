@@ -4,7 +4,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from loguru import logger
 from peewee import *
-from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard
+from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard, contact_details_to_choose_from
 from system.dispatcher import bot, dp, router
 
 
@@ -26,6 +26,8 @@ class EnteringCustomerData(StatesGroup):  # Создаем группу сост
     product_photo = State()  # Создаем состояние Фото товара
     FULL_NAME = State()  # Создаем состояние ФИО покупателя
     phone_number = State()  # Создаем состояние Телефон покупателя
+    mail = State()  # Создаем состояние E-mail покупателя
+    telegram = State()  # Создаем состояние Телефон покупателя
 
 
 @router.callback_query(F.data == "WILBEREES")
@@ -98,9 +100,31 @@ async def FULL_NAME(message: Message, state: FSMContext):
     text = message.html_text
     logger.info(text)
     await state.update_data(FULL_NAME=text)  # Сохранить данные в состояние
-    sign_up_text = "Введите телефон"
-    await bot.send_message(message.from_user.id, sign_up_text, disable_web_page_preview=True)
+    sign_up_text = "Введите контактные данные на выбор"
+    await bot.send_message(message.from_user.id, sign_up_text, disable_web_page_preview=True,
+                           reply_markup=contact_details_to_choose_from())
+    # await state.set_state(EnteringCustomerData.phone_number)
+
+
+@router.callback_query(F.data == "telephone")
+async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    sign_up_text = "Пожалуйста введите номер телефона"
+    await bot.send_message(callback_query.from_user.id, sign_up_text)
     await state.set_state(EnteringCustomerData.phone_number)
+
+
+@router.callback_query(F.data == "mail")
+async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    sign_up_text = "Пожалуйста введите номер email"
+    await bot.send_message(callback_query.from_user.id, sign_up_text)
+    await state.set_state(EnteringCustomerData.mail)
+
+
+@router.callback_query(F.data == "telegram")
+async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    sign_up_text = "Пожалуйста введите telegram"
+    await bot.send_message(callback_query.from_user.id, sign_up_text)
+    await state.set_state(EnteringCustomerData.telegram)
 
 
 # Создайте модель для таблицы в базе данных
@@ -155,6 +179,84 @@ async def phone_number(message: Message, state: FSMContext):
                         f"Фото товара: {product_photo}\n"
                         f"Ф.И.О.: {full_name}\n"
                         f"Телефон: {phone_number_text}")
+    await state.clear()
+    await message.reply(response_message, reply_markup=filled_data_keyboard())
+
+
+@router.message(EnteringCustomerData.mail)
+async def mail(message: Message, state: FSMContext):
+    mail = message.html_text
+    logger.info(mail)
+    await state.update_data(phone_number=mail)  # Сохранить данные в состояние
+
+    # Получить все собранные данные из состояния
+    data = await state.get_data()
+    product_code = data.get('product_code')
+    order_number = data.get('order_number')
+    product_photo = data.get('product_photo')
+    full_name = data.get('FULL_NAME')
+    db.create_tables([Customer])
+
+    customer = Customer.create(
+        telegram_id=message.from_user.id,
+        telegram_username=message.from_user.username,
+        product_code=product_code,
+        order_number=order_number,
+        product_photo=product_photo,
+        full_name=full_name,
+        phone_number=mail
+    )
+    customer.save()
+
+    # Отправьте пользователю сообщение со всей собранной информацией
+    response_message = (f"Спасибо за предоставленную информацию!\n\n"
+
+                        f"Ваш запрос принят:\n\n"
+
+                        f"Артикул товара: {product_code}\n"
+                        f"Номер заказа: {order_number}\n"
+                        f"Фото товара: {product_photo}\n"
+                        f"Ф.И.О.: {full_name}\n"
+                        f"Email: {mail}")
+    await state.clear()
+    await message.reply(response_message, reply_markup=filled_data_keyboard())
+
+
+@router.message(EnteringCustomerData.telegram)
+async def mail(message: Message, state: FSMContext):
+    telegram = message.html_text
+    logger.info(telegram)
+    await state.update_data(phone_number=telegram)  # Сохранить данные в состояние
+
+    # Получить все собранные данные из состояния
+    data = await state.get_data()
+    product_code = data.get('product_code')
+    order_number = data.get('order_number')
+    product_photo = data.get('product_photo')
+    full_name = data.get('FULL_NAME')
+    db.create_tables([Customer])
+
+    customer = Customer.create(
+        telegram_id=message.from_user.id,
+        telegram_username=message.from_user.username,
+        product_code=product_code,
+        order_number=order_number,
+        product_photo=product_photo,
+        full_name=full_name,
+        phone_number=telegram
+    )
+    customer.save()
+
+    # Отправьте пользователю сообщение со всей собранной информацией
+    response_message = (f"Спасибо за предоставленную информацию!\n\n"
+
+                        f"Ваш запрос принят:\n\n"
+
+                        f"Артикул товара: {product_code}\n"
+                        f"Номер заказа: {order_number}\n"
+                        f"Фото товара: {product_photo}\n"
+                        f"Ф.И.О.: {full_name}\n"
+                        f"telegram: {telegram}")
     await state.clear()
     await message.reply(response_message, reply_markup=filled_data_keyboard())
 
