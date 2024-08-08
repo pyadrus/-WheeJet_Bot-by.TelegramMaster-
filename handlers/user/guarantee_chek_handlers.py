@@ -4,7 +4,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from loguru import logger
 from peewee import *
-from keyboards.keyboards import guarantee_chek_keyboard
+from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard
 from system.dispatcher import bot, dp, router
 
 
@@ -147,17 +147,16 @@ async def phone_number(message: Message, state: FSMContext):
 
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"Спасибо за предоставленную информацию!\n\n"
-                        
+
                         f"Ваш запрос принят:\n\n"
-                        
+
                         f"Артикул товара: {product_code}\n"
                         f"Номер заказа: {order_number}\n"
                         f"Фото товара: {product_photo}\n"
                         f"Ф.И.О.: {full_name}\n"
                         f"Телефон: {phone_number_text}")
-
-    await message.reply(response_message)
     await state.clear()
+    await message.reply(response_message, reply_markup=filled_data_keyboard())
 
 
 def register_guarantee_chek_handlers():
