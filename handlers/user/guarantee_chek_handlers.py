@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from loguru import logger
-
+from peewee import *
 from keyboards.keyboards import guarantee_chek_keyboard
 from system.dispatcher import bot, dp, router
 
@@ -103,6 +103,23 @@ async def FULL_NAME(message: Message, state: FSMContext):
     await state.set_state(EnteringCustomerData.phone_number)
 
 
+# Создайте модель для таблицы в базе данных
+db = SqliteDatabase('my_database.db')
+
+
+class Customer(Model):
+    telegram_id = CharField()  # Идентификатор пользователя Telegram
+    telegram_username = CharField()  # Идентификатор пользователя Telegram (username)
+    product_code = CharField()  # Артикул товара
+    order_number = CharField()  # Номер заказа
+    product_photo = CharField()  # Артикул товара
+    full_name = CharField()  # Ф.И.О.
+    phone_number = CharField()  # Телефон
+
+    class Meta:
+        database = db
+
+
 @router.message(EnteringCustomerData.phone_number)
 async def phone_number(message: Message, state: FSMContext):
     phone_number_text = message.html_text
@@ -115,9 +132,24 @@ async def phone_number(message: Message, state: FSMContext):
     order_number = data.get('order_number')
     product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
+    db.create_tables([Customer])
+
+    customer = Customer.create(
+        telegram_id=message.from_user.id,
+        telegram_username=message.from_user.username,
+        product_code=product_code,
+        order_number=order_number,
+        product_photo=product_photo,
+        full_name=full_name,
+        phone_number=phone_number_text
+    )
+    customer.save()
 
     # Отправьте пользователю сообщение со всей собранной информацией
-    response_message = (f"Ваш запрос принят:\n\n"
+    response_message = (f"Спасибо за предоставленную информацию!\n\n"
+                        
+                        f"Ваш запрос принят:\n\n"
+                        
                         f"Артикул товара: {product_code}\n"
                         f"Номер заказа: {order_number}\n"
                         f"Фото товара: {product_photo}\n"
