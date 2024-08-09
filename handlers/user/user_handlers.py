@@ -6,6 +6,7 @@ from loguru import logger
 from keyboards.keyboards import greeting_keyboard
 from system.dispatcher import bot, dp
 from system.dispatcher import router
+from system.working_with_files import load_bot_info
 
 
 @dp.message(CommandStart())
@@ -16,10 +17,10 @@ async def user_start_handler(message: Message) -> None:
     user_last_name = message.from_user.last_name
     user_date = message.date.strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"{user_id} {user_name} {user_first_name} {user_last_name} {user_date}")
-    sign_up_text = "Добро пожаловать user\n\nДля перезапуска бота нажмите /start"
+    data = load_bot_info(messages="media/messages/main_menu_messages.json")
     greeting_keyboards = greeting_keyboard()
     await bot.send_message(message.from_user.id,
-                           sign_up_text,
+                           data,
                            reply_markup=greeting_keyboards,
                            disable_web_page_preview=True, )
 
