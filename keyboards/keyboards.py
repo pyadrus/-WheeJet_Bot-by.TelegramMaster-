@@ -3,10 +3,9 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def greeting_keyboard():
     rows = [
-        [InlineKeyboardButton(text='💬 Связь с поддержкой', url='https://t.me/WheeJet_Sup'), ],
-        [InlineKeyboardButton(text='📖 Инструкция', callback_data='instructions'),
-         InlineKeyboardButton(text='🔍 Гарантия', callback_data='check_out_the_warranty')],
-        [InlineKeyboardButton(text='🔗 Перейти в канал', url='https://t.me/wheejet_ru')],
+        [InlineKeyboardButton(text='📞 Связь с поддержкой', url='https://t.me/WheeJet_Sup'), ],
+        [InlineKeyboardButton(text='📚 Инструкция', callback_data='instructions'),
+         InlineKeyboardButton(text='🛡 Гарантия', callback_data='check_out_the_warranty')],
     ]
     greeting_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
     return greeting_keyboards
