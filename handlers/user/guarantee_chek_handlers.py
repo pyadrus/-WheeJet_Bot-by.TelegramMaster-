@@ -4,6 +4,8 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from loguru import logger
 from peewee import *
+
+from database.database import db, Customer
 from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard, contact_details_to_choose_from
 from system.dispatcher import bot, dp, router
 
@@ -125,23 +127,6 @@ async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FS
     sign_up_text = "Пожалуйста введите telegram"
     await bot.send_message(callback_query.from_user.id, sign_up_text)
     await state.set_state(EnteringCustomerData.telegram)
-
-
-# Создайте модель для таблицы в базе данных
-db = SqliteDatabase('my_database.db')
-
-
-class Customer(Model):
-    telegram_id = CharField()  # Идентификатор пользователя Telegram
-    telegram_username = CharField()  # Идентификатор пользователя Telegram (username)
-    product_code = CharField()  # Артикул товара
-    order_number = CharField()  # Номер заказа
-    product_photo = CharField()  # Артикул товара
-    full_name = CharField()  # Ф.И.О.
-    phone_number = CharField()  # Телефон
-
-    class Meta:
-        database = db
 
 
 @router.message(EnteringCustomerData.phone_number)
