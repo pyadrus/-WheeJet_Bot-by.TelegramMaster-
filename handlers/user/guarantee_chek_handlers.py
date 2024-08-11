@@ -5,7 +5,7 @@ from aiogram.types import Message
 from loguru import logger
 from peewee import *
 
-from database.database import db, Customer
+from database.database import entry_into_the_database_to_fill_out_a_warranty_card
 from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard, contact_details_to_choose_from
 from system.dispatcher import bot, dp, router
 
@@ -105,7 +105,6 @@ async def FULL_NAME(message: Message, state: FSMContext):
     sign_up_text = "Введите контактные данные на выбор"
     await bot.send_message(message.from_user.id, sign_up_text, disable_web_page_preview=True,
                            reply_markup=contact_details_to_choose_from())
-    # await state.set_state(EnteringCustomerData.phone_number)
 
 
 @router.callback_query(F.data == "telephone")
@@ -141,19 +140,8 @@ async def phone_number(message: Message, state: FSMContext):
     order_number = data.get('order_number')
     product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
-    db.create_tables([Customer])
-
-    customer = Customer.create(
-        telegram_id=message.from_user.id,
-        telegram_username=message.from_user.username,
-        product_code=product_code,
-        order_number=order_number,
-        product_photo=product_photo,
-        full_name=full_name,
-        phone_number=phone_number_text
-    )
-    customer.save()
-
+    entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
+                                                        order_number, product_photo, full_name, phone_number_text)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"Спасибо за предоставленную информацию!\n\n"
 
@@ -180,19 +168,8 @@ async def mail(message: Message, state: FSMContext):
     order_number = data.get('order_number')
     product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
-    db.create_tables([Customer])
-
-    customer = Customer.create(
-        telegram_id=message.from_user.id,
-        telegram_username=message.from_user.username,
-        product_code=product_code,
-        order_number=order_number,
-        product_photo=product_photo,
-        full_name=full_name,
-        phone_number=mail
-    )
-    customer.save()
-
+    entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
+                                                        order_number, product_photo, full_name, mail)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"Спасибо за предоставленную информацию!\n\n"
 
@@ -219,19 +196,8 @@ async def mail(message: Message, state: FSMContext):
     order_number = data.get('order_number')
     product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
-    db.create_tables([Customer])
-
-    customer = Customer.create(
-        telegram_id=message.from_user.id,
-        telegram_username=message.from_user.username,
-        product_code=product_code,
-        order_number=order_number,
-        product_photo=product_photo,
-        full_name=full_name,
-        phone_number=telegram
-    )
-    customer.save()
-
+    entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
+                                                        order_number, product_photo, full_name, telegram)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"Спасибо за предоставленную информацию!\n\n"
 
