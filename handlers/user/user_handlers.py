@@ -29,7 +29,6 @@ async def user_start_handler(message: Message) -> None:
     await bot.send_message(message.from_user.id,
                            load_bot_info(messages="messages/main_menu_messages.json"),
                            reply_markup=greeting_keyboard(),
-                           # disable_web_page_preview=True,
                            parse_mode="HTML"
                            )
 
@@ -44,7 +43,6 @@ async def instructions_handlers(callback_query: types.CallbackQuery) -> None:
     await bot.send_message(callback_query.from_user.id,
                            load_bot_info(messages="messages/main_menu_messages.json"),
                            reply_markup=greeting_keyboard(),
-                           # disable_web_page_preview=True,
                            parse_mode="HTML"
                            )
 
