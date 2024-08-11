@@ -58,9 +58,9 @@ def filled_data_keyboard():
 
 def contact_details_to_choose_from():
     rows = [
-        [InlineKeyboardButton(text='Телефон', callback_data='telephone')],
-        [InlineKeyboardButton(text='Почта', callback_data='mail')],
-        [InlineKeyboardButton(text='Телеграм', callback_data='telegram')],
+        [InlineKeyboardButton(text='📞 Телефон (+***)', callback_data='telephone')],
+        [InlineKeyboardButton(text='📨 Почта', callback_data='mail')],
+        [InlineKeyboardButton(text='🛬 Телеграм (@***)', callback_data='telegram')],
     ]
     contact_details_to_choose_from_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
     return contact_details_to_choose_from_keyboards
