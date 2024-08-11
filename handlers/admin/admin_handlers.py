@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.types import Message
 from loguru import logger
 
+from keyboards.admin_keyboards import admin_keyboard
 from system.dispatcher import bot, dp
 
 
@@ -14,7 +15,8 @@ async def admin_start_handler(message: Message) -> None:
     user_date = message.date.strftime("%Y-%m-%d %H:%M:%S")
     logger.info(f"{user_id} {user_name} {user_first_name} {user_last_name} {user_date}")
     sign_up_text = "Добро пожаловать Admin"
-    await bot.send_message(message.from_user.id, sign_up_text, disable_web_page_preview=True)
+    await bot.send_message(message.from_user.id, sign_up_text, reply_markup=admin_keyboard(),
+                           disable_web_page_preview=True)
 
 
 def register_greeting_admin_handler():
