@@ -13,10 +13,10 @@ def greeting_keyboard():
 
 def instructions_keyboard():
     rows = [
-        [InlineKeyboardButton(text='📄 Ссылка на инструкцию',
+        [InlineKeyboardButton(text='📄 Инструкция',
                               url='https://docs.google.com/document/d/1miViCx2KmH6PJVXZaaruwbQGleEhbM_gsdZ-uFNhwGY/edit')],
         [InlineKeyboardButton(text='🔍 Проверить / оформить гарантию', callback_data='check_out_the_warranty')],
-        [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')],
+        [InlineKeyboardButton(text='🔙 Вернуться на главную страницу', callback_data='back_to_menu')],
     ]
     instructions_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
     return instructions_keyboards

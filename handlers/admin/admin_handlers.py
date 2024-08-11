@@ -37,6 +37,7 @@ async def admin_send_start(callback_query: types.CallbackQuery, state: FSMContex
 
                                                              "<b>Редактирование текста:</b>\n"
                                                              "✔️ /edit_main_menu - текст меню бота\n"
+                                                             "✔️ /edit_instructions - текст меню 'инструкция'\n"
 
                                                              "<b>Получение данных:</b>\n"
                                                              "✔️ /get_users_who_launched_the_bot - Получение данных пользователей, запускающих бота\n\n"
