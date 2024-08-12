@@ -1,24 +1,54 @@
 from aiogram import types, F
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from loguru import logger
-from peewee import *
 
 from database.database import entry_into_the_database_to_fill_out_a_warranty_card
 from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard, contact_details_to_choose_from
+from system.dispatcher import ADMIN_USER_ID
 from system.dispatcher import bot, dp, router
+from system.working_with_files import load_bot_info
+from system.working_with_files import save_bot_info
+
+
+class Formedit_guarantee_chek(StatesGroup):
+    text_edit_guarantee_chek = State()
+
+
+@router.message(Command("edit_guarantee_chek"))
+async def edit_guarantee_chek(message: Message, state: FSMContext):
+    """Обработчик команды /edit_guarantee_chek (Хочу заполнить гарантийный талон)"""
+    if message.from_user.id not in ADMIN_USER_ID:
+        await message.reply("У вас нет прав на выполнение этой команды.")
+        return
+    await message.answer("Введите новый текст, используя разметку HTML.")
+    await state.set_state(Formedit_guarantee_chek.text_edit_guarantee_chek)
+
+
+@router.message(Formedit_guarantee_chek.text_edit_guarantee_chek)
+async def update_info(message: Message, state: FSMContext):
+    """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
+    text = message.html_text
+    bot_info = text
+    save_bot_info(bot_info, file_path="messages/guarantee_chek_messages.json")  # Сохраняем информацию в JSON
+    await message.reply("Информация обновлена.")
+    await state.clear()
 
 
 @router.callback_query(F.data == "guarantee_chek")
 async def guarantee_chek_handlers(callback_query: types.CallbackQuery) -> None:
+    """Заполнение гарантийного талона"""
     user_id = callback_query.from_user.id
     user_name = callback_query.from_user.username
     user_first_name = callback_query.from_user.first_name
     user_last_name = callback_query.from_user.last_name
     logger.info(f"{user_id} {user_name} {user_first_name} {user_last_name}")
-    sign_up_text = "Пожалуйста выберите место покупки"
-    await bot.send_message(callback_query.from_user.id, sign_up_text, reply_markup=guarantee_chek_keyboard(),
+
+    await bot.send_message(callback_query.from_user.id,
+                           load_bot_info(messages="messages/guarantee_chek_messages.json"),
+                           reply_markup=guarantee_chek_keyboard(),
                            disable_web_page_preview=True)
 
 
@@ -220,3 +250,4 @@ def register_guarantee_chek_handlers():
     dp.message.register(retail_store_handlers)
     dp.message.register(Exhibition_handlers)
     dp.message.register(Other_handlers)
+    dp.message.register(edit_guarantee_chek)
