@@ -1,18 +1,21 @@
+import os
+import uuid
+
 from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message
-from loguru import logger
 from aiogram.types import FSInputFile
+from aiogram.types import Message
+from docxtpl import DocxTemplate
+from loguru import logger
+
 from database.database import entry_into_the_database_to_fill_out_a_warranty_card
 from keyboards.keyboards import guarantee_chek_keyboard, filled_data_keyboard, contact_details_to_choose_from
 from system.dispatcher import ADMIN_USER_ID
 from system.dispatcher import bot, dp, router
 from system.working_with_files import load_bot_info
 from system.working_with_files import save_bot_info
-from docxtpl import DocxTemplate
-import uuid
 
 
 class Formedit_guarantee_chek(StatesGroup):
@@ -65,13 +68,18 @@ class EnteringCustomerData(StatesGroup):  # Создаем группу сост
     tipe_shop = State()  # Создаем состояние Тип магазина
     date_of_purchase = State()  # Создаем состояние Дата покупки
     communication_method = State()  # Создаем состояние Способ доставки
-
+    short_code = State()  # Создаем состояние Короткий код
 
 @router.callback_query(F.data == "WILBEREES")
 async def WILBEREES_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     tipe_shop = 'WILBEREES'
     logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
+
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
+    logger.info(short_code)
+    await state.update_data(short_code=short_code)  # Сохраняем код
+
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.product_code)
@@ -82,6 +90,11 @@ async def OZON_handlers(callback_query: types.CallbackQuery, state: FSMContext) 
     tipe_shop = 'OZON'
     logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
+
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
+    logger.info(short_code)
+    await state.update_data(short_code=short_code)  # Сохраняем код
+
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.product_code)
@@ -92,6 +105,11 @@ async def retail_store_handlers(callback_query: types.CallbackQuery, state: FSMC
     tipe_shop = 'Розничный магазин'
     logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
+
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
+    logger.info(short_code)
+    await state.update_data(short_code=short_code)  # Сохраняем код
+
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.product_code)
@@ -102,6 +120,11 @@ async def Exhibition_handlers(callback_query: types.CallbackQuery, state: FSMCon
     tipe_shop = 'Выставка'
     logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
+
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
+    logger.info(short_code)
+    await state.update_data(short_code=short_code)  # Сохраняем код
+
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.product_code)
@@ -109,6 +132,10 @@ async def Exhibition_handlers(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.callback_query(F.data == "Other")
 async def Other_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
+    logger.info(short_code)
+    await state.update_data(short_code=short_code)  # Сохраняем код
+
     sign_up_text = "🛒 Пожалуйста. Введите место покупки:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.tipe_shop)
@@ -145,18 +172,28 @@ async def order_number(message: Message, state: FSMContext):
     await state.set_state(EnteringCustomerData.product_photo)
 
 
-@router.message(EnteringCustomerData.product_photo)
-async def product_photo(message: Message, state: FSMContext):
+@router.message(EnteringCustomerData.product_photo, F.photo)
+async def product_photos(message: Message, state: FSMContext):
     text = message.html_text
     logger.info(text)
     await state.update_data(product_photo=text)  # Сохранить данные в состояние
+
+    data = await state.get_data()
+    short_code = data.get('short_code')
+    logger.info(f'Имя для фото товара: {short_code}')
+
+    photo = message.photo[-1]
+    file_info = await message.bot.get_file(photo.file_id)
+    new_photo_path = os.path.join("product_photo", f'{short_code}.jpg')
+    await message.bot.download_file(file_info.file_path, new_photo_path)
+
     sign_up_text = "Введите ваши данные (Ф.И.О.):"
     await bot.send_message(message.from_user.id, sign_up_text, disable_web_page_preview=True)
     await state.set_state(EnteringCustomerData.FULL_NAME)
 
 
 @router.message(EnteringCustomerData.FULL_NAME)
-async def product_photo(message: Message, state: FSMContext):
+async def product_photos(message: Message, state: FSMContext):
     text = message.html_text
     logger.info(text)
     await state.update_data(FULL_NAME=text)  # Сохранить данные в состояние
@@ -214,20 +251,19 @@ async def phone_number(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    product_photo = data.get('product_photo')
+    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
-    logger.info(short_code)
+    short_code = data.get('short_code')
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
 
                         f"Номер гарантийного талона: {short_code}\n"  # Артикул товара
                         )
     entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
-                                                        order_number, product_photo,
+                                                        order_number, short_code,
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
@@ -249,20 +285,19 @@ async def mail(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    product_photo = data.get('product_photo')
+    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
-    logger.info(short_code)
+    short_code = data.get('short_code')
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
 
                         f"Номер гарантийного талона: {short_code}\n"  # Артикул товара
                         )
     entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
-                                                        order_number, product_photo,
+                                                        order_number, short_code,
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
@@ -284,20 +319,19 @@ async def mail(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    product_photo = data.get('product_photo')
+    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
-    logger.info(short_code)
+    short_code = data.get('short_code')
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
 
                         f"Номер гарантийного талона: {short_code}\n"  # Артикул товара
                         )
     entry_into_the_database_to_fill_out_a_warranty_card(message.from_user.id, message.from_user.username, product_code,
-                                                        order_number, product_photo, full_name, contact,
+                                                        order_number, short_code, full_name, contact,
                                                         communication_method,
                                                         date_of_purchase, tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
