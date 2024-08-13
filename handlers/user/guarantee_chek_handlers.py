@@ -227,9 +227,9 @@ async def phone_number(message: Message, state: FSMContext):
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, warranty_number)
 
-    file_dog = f'form/Гарантийный_лист.docx'
+    file_dog = f'form/Гарантийный_талон.docx'
     warranty_card_number = short_code
-    files_dog = f'completed_form/Гарантийный_лист_{short_code}.docx'
+    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
                              warranty_card_number,
                              files_dog)
@@ -270,9 +270,9 @@ async def mail(message: Message, state: FSMContext):
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, warranty_number)
 
-    file_dog = f'form/Гарантийный_лист.docx'
+    file_dog = f'form/Гарантийный_талон.docx'
     warranty_card_number = short_code
-    files_dog = f'completed_form/Гарантийный_лист_{short_code}.docx'
+    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
                              warranty_card_number,
                              files_dog)
@@ -313,9 +313,9 @@ async def mail(message: Message, state: FSMContext):
                                                         communication_method,
                                                         date_of_purchase, tipe_shop, warranty_number)
 
-    file_dog = f'form/Гарантийный_лист.docx'
+    file_dog = f'form/Гарантийный_талон.docx'
     warranty_card_number = short_code
-    files_dog = f'completed_form/Гарантийный_лист_{short_code}.docx'
+    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact, warranty_card_number,
                              files_dog)
 
