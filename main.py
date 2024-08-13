@@ -7,6 +7,7 @@ from loguru import logger
 from handlers.admin.admin_handlers import register_greeting_admin_handler
 from handlers.user.check_out_the_warranty_handlers import register_check_out_the_warranty_handlers
 from handlers.user.check_the_warranty_card_handlers import register_check_the_warranty_card_handlers
+from handlers.user.download_warranty_card_handlers import register_download_warranty_card_handlers
 from handlers.user.guarantee_chek_handlers import \
     register_guarantee_chek_handlers
 from handlers.user.instructions_handlers import register_instructions_handlers
@@ -24,6 +25,7 @@ async def main() -> None:
     register_check_out_the_warranty_handlers()  # Обработчик команды /check_out_the_warranty
     register_guarantee_chek_handlers()  # Обработчик команды /i_accept_the_terms_fill_out_the_form
     register_check_the_warranty_card_handlers()  # Обработчик команды /check_the_warranty_card
+    register_download_warranty_card_handlers()
 
 
 if __name__ == "__main__":
