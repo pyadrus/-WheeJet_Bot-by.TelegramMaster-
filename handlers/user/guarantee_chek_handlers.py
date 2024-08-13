@@ -219,8 +219,7 @@ async def phone_number(message: Message, state: FSMContext):
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    # Создание короткого цифрового кода длиной 8 символов
-    short_code = str(uuid.uuid4())[:8]
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
     logger.info(short_code)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
@@ -255,8 +254,7 @@ async def mail(message: Message, state: FSMContext):
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    # Создание короткого цифрового кода длиной 8 символов
-    short_code = str(uuid.uuid4())[:8]
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
     logger.info(short_code)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
@@ -291,8 +289,7 @@ async def mail(message: Message, state: FSMContext):
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
     communication_method = data.get('communication_method')
-    # Создание короткого цифрового кода длиной 8 символов
-    short_code = str(uuid.uuid4())[:8]
+    short_code = str(uuid.uuid4())[:8]  # Создание короткого цифрового кода длиной 8 символов
     logger.info(short_code)
     # Отправьте пользователю сообщение со всей собранной информацией
     response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
@@ -305,8 +302,8 @@ async def mail(message: Message, state: FSMContext):
                                                         date_of_purchase, tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
     files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
-    filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact, short_code,
-                             files_dog)
+    filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
+                             short_code, files_dog)
     await state.clear()
     file = FSInputFile(files_dog)
     await bot.send_document(message.from_user.id, document=file, caption=response_message,

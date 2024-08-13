@@ -1,4 +1,5 @@
 import os
+from zipfile import ZipFile
 
 import openpyxl
 from aiogram import F
@@ -60,9 +61,10 @@ async def admin_send_start(callback_query: types.CallbackQuery, state: FSMContex
         "✔️ /edit_check_the_warranty_card - <i>Изменение текста раздела «Хочу проверить гарантийный талон».</i>\n\n"
 
         "📊 <b>Получение данных:</b>\n"
-        "✔️ /get_users_who_launched_the_bot - <i>Выгрузка списка пользователей, которые запускали бота.</i>\n\n"
+        "✔️ /get_users_who_launched_the_bot - <i>Выгрузка списка пользователей, которые запускали бота.</i>\n"
+        "✔️ /get_warranty_cards - <i>Скачать сформированные гарантийные талоны.</i>\n"
 
-        "ℹ️ Чтобы вернуться в начальное меню, нажмите /start."
+        "ℹ️ Чтобы вернуться в начальное меню, нажмите /admin_start."
     )
 
     await bot.send_message(callback_query.from_user.id, text=admin_commands_text, parse_mode="HTML")
@@ -102,6 +104,43 @@ def reading_from_database():
     return orders
 
 
+def create_zip_archive():
+    # Создаем ZIP-файл
+    with ZipFile('archive.zip', 'w') as archive:
+        # Перебираем все файлы в текущем каталоге
+        for foldername, subfolders, filenames in os.walk('completed_form'):
+            for filename in filenames:
+                # Добавляем файл в архив
+                archive.write(os.path.join(foldername, filename))
+    file = 'archive.zip'
+    return file
+
+
+@router.message(Command("get_warranty_cards"))
+async def get_users_who_launched_the_bot(message: types.Message, state: FSMContext):
+    """Получение данных пользователей, запускающих бота"""
+    await state.clear()  # Завершаем текущее состояние машины состояний
+    try:
+        if message.from_user.id not in [535185511, 301634256]:
+            await message.reply('У вас нет доступа к этой команде.')
+            return
+        files = create_zip_archive() # Создание ZIP-файла
+        logger.info(f"Создан ZIP-файл: {files}")
+        file = FSInputFile(files)
+        text = (
+            "📊 <b>Заполненные гарантийные пользователей</b>\n\n"
+            "⬇️ <b>Скачайте файл</b>, чтобы просмотреть данные.\n\n"
+            "Для возврата в начальное меню нажмите на /admin_start"
+        )
+        await bot.send_document(message.from_user.id, document=file, caption=text,
+                                parse_mode="HTML")  # Отправка файла пользователю
+        os.remove(files)  # Удаление файла
+    except Exception as e:
+        logger.error(f"Произошла ошибка при попытке отправить файл: {e}")
+        await bot.send_message(message.from_user.id,
+                               "⚠️ Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.")
+
+
 @router.message(Command("get_users_who_launched_the_bot"))
 async def get_users_who_launched_the_bot(message: types.Message, state: FSMContext):
     """Получение данных пользователей, запускающих бота"""
@@ -119,9 +158,10 @@ async def get_users_who_launched_the_bot(message: types.Message, state: FSMConte
             "📊 <b>Данные пользователей, зарегистрированных в боте:</b>\n\n"
             "Файл содержит информацию о пользователях, которые запустили бота.\n\n"
             "⬇️ <b>Скачайте файл</b>, чтобы просмотреть данные.\n\n"
-            "Для возврата в начальное меню нажмите на /start или /help."
+            "Для возврата в начальное меню нажмите на /admin_start."
         )
-        await bot.send_document(message.from_user.id, document=file, caption=text, parse_mode="HTML")  # Отправка файла пользователю
+        await bot.send_document(message.from_user.id, document=file, caption=text,
+                                parse_mode="HTML")  # Отправка файла пользователю
         os.remove(filename)  # Удаление файла
     except Exception as e:
         logger.error(f"Произошла ошибка при попытке отправить файл: {e}")
