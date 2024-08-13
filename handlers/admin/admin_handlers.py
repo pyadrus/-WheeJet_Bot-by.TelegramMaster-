@@ -112,7 +112,7 @@ async def get_users_who_launched_the_bot(message: types.Message, state: FSMConte
             return
         orders = reading_from_database()
         workbook = create_excel_file_start(orders)  # Создание файла Excel
-        filename = 'Данные пользователей запустивших бота.xlsx'
+        filename = 'Данные_пользователей_запустивших_бота.xlsx'
         workbook.save(filename)  # Сохранение файла
         file = FSInputFile(filename)
         text = (
