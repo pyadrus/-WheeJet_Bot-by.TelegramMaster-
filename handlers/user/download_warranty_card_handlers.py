@@ -8,7 +8,7 @@ from aiogram.types import FSInputFile
 from aiogram.types import Message
 from loguru import logger
 
-from keyboards.keyboards import filled_data_keyboard
+from keyboards.keyboards import filled_data_keyboard, back_to_main_menu_keyboard
 from system.dispatcher import bot, dp, router
 
 
@@ -53,13 +53,13 @@ async def phone_number(message: Message, state: FSMContext):
     # Пример использования функции
     files = find_file_by_code('completed_form', contact)
     if files is None:
-        await message.answer("К сожалению, Ваш гарантийный талон еще не оформлен.")
+        await message.answer("К сожалению, Ваш гарантийный талон еще не оформлен.", reply_markup=back_to_main_menu_keyboard())
     else:
         logger.info(files)  # Выводим первый найденный файл в папке 'completed_form'
         file = FSInputFile(files)
         response_message = f"Гарантийный талон № {contact}"
         await bot.send_document(message.from_user.id, document=file, caption=response_message,
-                                parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
+                                parse_mode="HTML", reply_markup=back_to_main_menu_keyboard())  # Отправка файла пользователю
 
 
 def register_download_warranty_card_handlers():

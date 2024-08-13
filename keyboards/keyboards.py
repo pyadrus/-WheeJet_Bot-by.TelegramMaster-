@@ -56,6 +56,14 @@ def filled_data_keyboard():
     return filled_data_keyboards
 
 
+def back_to_main_menu_keyboard():
+    rows = [
+        [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')]
+    ]
+    check_the_warranty_card_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
+    return check_the_warranty_card_keyboards
+
+
 def check_the_warranty_card_keyboard():
     rows = [
         [InlineKeyboardButton(text='🧾 Скачать гарантийный талон', callback_data='download_warranty_card')],
@@ -82,3 +90,4 @@ if __name__ == '__main__':
     guarantee_chek_keyboard()
     filled_data_keyboard()
     contact_details_to_choose_from()
+    back_to_main_menu_keyboard()
