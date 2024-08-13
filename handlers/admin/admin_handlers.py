@@ -63,6 +63,7 @@ async def admin_send_start(callback_query: types.CallbackQuery, state: FSMContex
         "📊 <b>Получение данных:</b>\n"
         "✔️ /get_users_who_launched_the_bot - <i>Выгрузка списка пользователей, которые запускали бота.</i>\n"
         "✔️ /get_warranty_cards - <i>Скачать сформированные гарантийные талоны.</i>\n"
+        "✔️ /get_photos_goods - <i>Скачать фото товаров.</i>\n\n"
 
         "ℹ️ Чтобы вернуться в начальное меню, нажмите /admin_start."
     )
@@ -104,6 +105,43 @@ def reading_from_database():
     return orders
 
 
+def create_zip_archive_photos_goods():
+    # Создаем ZIP-файл
+    with ZipFile('archive.zip', 'w') as archive:
+        # Перебираем все файлы в текущем каталоге
+        for foldername, subfolders, filenames in os.walk('product_photo'):
+            for filename in filenames:
+                # Добавляем файл в архив
+                archive.write(os.path.join(foldername, filename))
+    file = 'archive.zip'
+    return file
+
+
+@router.message(Command("get_photos_goods"))
+async def get_users_get_photos_goods(message: types.Message, state: FSMContext):
+    """Получение данных пользователей, запускающих бота"""
+    await state.clear()  # Завершаем текущее состояние машины состояний
+    try:
+        if message.from_user.id not in [535185511, 301634256]:
+            await message.reply('У вас нет доступа к этой команде.')
+            return
+        files = create_zip_archive_photos_goods()  # Создание ZIP-файла
+        logger.info(f"Создан ZIP-файл: {files}")
+        file = FSInputFile(files)
+        text = (
+            "📊 <b>Фото товаров пользователей</b>\n\n"
+            "⬇️ <b>Скачайте файл</b>, чтобы просмотреть данные.\n\n"
+            "Для возврата в начальное меню нажмите на /admin_start"
+        )
+        await bot.send_document(message.from_user.id, document=file, caption=text,
+                                parse_mode="HTML")  # Отправка файла пользователю
+        os.remove(files)  # Удаление файла
+    except Exception as e:
+        logger.error(f"Произошла ошибка при попытке отправить файл: {e}")
+        await bot.send_message(message.from_user.id,
+                               "⚠️ Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.")
+
+
 def create_zip_archive():
     # Создаем ZIP-файл
     with ZipFile('archive.zip', 'w') as archive:
@@ -124,7 +162,7 @@ async def get_users_who_launched_the_bot(message: types.Message, state: FSMConte
         if message.from_user.id not in [535185511, 301634256]:
             await message.reply('У вас нет доступа к этой команде.')
             return
-        files = create_zip_archive() # Создание ZIP-файла
+        files = create_zip_archive()  # Создание ZIP-файла
         logger.info(f"Создан ZIP-файл: {files}")
         file = FSInputFile(files)
         text = (
@@ -173,3 +211,4 @@ def register_greeting_admin_handler():
     """Регистрация обработчиков для бота"""
     dp.message.register(admin_start_handler)
     dp.message.register(admin_send_start)
+    dp.message.register(get_users_get_photos_goods)
