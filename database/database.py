@@ -1,7 +1,7 @@
 from peewee import *
 
 # Создайте модель для таблицы в базе данных
-db = SqliteDatabase('my_database.db')
+db = SqliteDatabase('database.db')
 
 
 class UserStart(Model):

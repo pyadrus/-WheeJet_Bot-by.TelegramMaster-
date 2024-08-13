@@ -70,6 +70,7 @@ class EnteringCustomerData(StatesGroup):  # Создаем группу сост
 @router.callback_query(F.data == "WILBEREES")
 async def WILBEREES_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     tipe_shop = 'WILBEREES'
+    logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
@@ -79,6 +80,7 @@ async def WILBEREES_handlers(callback_query: types.CallbackQuery, state: FSMCont
 @router.callback_query(F.data == "OZON")
 async def OZON_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     tipe_shop = 'OZON'
+    logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
@@ -88,6 +90,7 @@ async def OZON_handlers(callback_query: types.CallbackQuery, state: FSMContext) 
 @router.callback_query(F.data == "retail_store")
 async def retail_store_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     tipe_shop = 'Розничный магазин'
+    logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
@@ -97,6 +100,7 @@ async def retail_store_handlers(callback_query: types.CallbackQuery, state: FSMC
 @router.callback_query(F.data == "Exhibition")
 async def Exhibition_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     tipe_shop = 'Выставка'
+    logger.info(tipe_shop)
     await state.update_data(tipe_shop=tipe_shop)  # Сохраняем тип магазина в состояние
     sign_up_text = "🛒 Введите артикул товара:"
     await bot.send_message(callback_query.from_user.id, sign_up_text, disable_web_page_preview=True)
@@ -113,6 +117,7 @@ async def Other_handlers(callback_query: types.CallbackQuery, state: FSMContext)
 @router.message(EnteringCustomerData.tipe_shop)
 async def Other_handlers(message: Message, state: FSMContext) -> None:
     custom_shop_type = message.html_text
+    logger.info(custom_shop_type)
     await state.update_data(tipe_shop=custom_shop_type)  # Save the custom shop type
 
     sign_up_text = "🛒 Введите артикул товара:"
@@ -173,6 +178,7 @@ async def FULL_NAME(message: Message, state: FSMContext):
 @router.callback_query(F.data == "telephone")
 async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     communication_method = 'Телефон'
+    logger.info(communication_method)
     await state.update_data(communication_method=communication_method)  # Сохраняем тип магазина в состояние
     sign_up_text = "Пожалуйста введите номер телефона (+***)"
     await bot.send_message(callback_query.from_user.id, sign_up_text)
@@ -182,6 +188,7 @@ async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FS
 @router.callback_query(F.data == "mail")
 async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     communication_method = 'Почта'
+    logger.info(communication_method)
     await state.update_data(communication_method=communication_method)  # Сохраняем тип магазина в состояние
     sign_up_text = "Пожалуйста введите номер email"
     await bot.send_message(callback_query.from_user.id, sign_up_text)
@@ -191,6 +198,7 @@ async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FS
 @router.callback_query(F.data == "telegram")
 async def guarantee_chek_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
     communication_method = 'Телеграм'
+    logger.info(communication_method)
     await state.update_data(communication_method=communication_method)  # Сохраняем тип магазина в состояние
     sign_up_text = "Пожалуйста введите telegram (@***)"
     await bot.send_message(callback_query.from_user.id, sign_up_text)

@@ -8,7 +8,7 @@ from aiogram.types import FSInputFile
 from aiogram.types import Message
 from loguru import logger
 
-from keyboards.keyboards import filled_data_keyboard, back_to_main_menu_keyboard
+from keyboards.keyboards import back_to_main_menu_keyboard
 from system.dispatcher import bot, dp, router
 
 
