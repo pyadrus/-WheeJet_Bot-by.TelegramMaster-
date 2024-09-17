@@ -25,7 +25,7 @@ def find_file_by_code(path, code):
         return files[0]
 
 
-class Formedit_download_warranty_card(StatesGroup):
+class FormeditDownloadWarrantyCard(StatesGroup):
     text_download_warranty_card = State()
 
 
@@ -42,10 +42,10 @@ async def download_warranty_card_handlers(callback_query: types.CallbackQuery, s
                            disable_web_page_preview=True,
                            parse_mode="HTML"
                            )
-    await state.set_state(Formedit_download_warranty_card.text_download_warranty_card)
+    await state.set_state(FormeditDownloadWarrantyCard.text_download_warranty_card)
 
 
-@router.message(Formedit_download_warranty_card.text_download_warranty_card)
+@router.message(FormeditDownloadWarrantyCard.text_download_warranty_card)
 async def phone_number(message: Message, state: FSMContext):
     contact = message.html_text
     logger.info(contact)

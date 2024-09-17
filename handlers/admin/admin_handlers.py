@@ -213,7 +213,9 @@ def register_greeting_admin_handler():
     dp.message.register(admin_send_start)
     dp.message.register(get_users_get_photos_goods)
 
+
 if __name__ == '__main__':
     reading_from_database()
     create_zip_archive()
     create_zip_archive_photos_goods()
+

@@ -26,7 +26,7 @@ async def instructions_handlers(callback_query: types.CallbackQuery) -> None:
                            )
 
 
-class Formedit_instructions(StatesGroup):
+class FormeditInstructions(StatesGroup):
     text_edit_instructions = State()
 
 
@@ -37,10 +37,10 @@ async def edit_instructions(message: Message, state: FSMContext):
         await message.reply("У вас нет прав на выполнение этой команды.")
         return
     await message.answer("Введите новый текст, используя разметку HTML.")
-    await state.set_state(Formedit_instructions.text_edit_instructions)
+    await state.set_state(FormeditInstructions.text_edit_instructions)
 
 
-@router.message(Formedit_instructions.text_edit_instructions)
+@router.message(FormeditInstructions.text_edit_instructions)
 async def update_info(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
     text = message.html_text

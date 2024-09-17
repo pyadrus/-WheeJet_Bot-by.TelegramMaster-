@@ -18,7 +18,7 @@ from system.working_with_files import load_bot_info
 from system.working_with_files import save_bot_info
 
 
-class Formedit_guarantee_chek(StatesGroup):
+class FormeditGuaranteeChek(StatesGroup):
     text_edit_guarantee_chek = State()
 
 
@@ -29,10 +29,10 @@ async def edit_guarantee_chek(message: Message, state: FSMContext):
         await message.reply("У вас нет прав на выполнение этой команды.")
         return
     await message.answer("Введите новый текст, используя разметку HTML.")
-    await state.set_state(Formedit_guarantee_chek.text_edit_guarantee_chek)
+    await state.set_state(FormeditGuaranteeChek.text_edit_guarantee_chek)
 
 
-@router.message(Formedit_guarantee_chek.text_edit_guarantee_chek)
+@router.message(FormeditGuaranteeChek.text_edit_guarantee_chek)
 async def update_info(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
     text = message.html_text
@@ -69,6 +69,7 @@ class EnteringCustomerData(StatesGroup):  # Создаем группу сост
     date_of_purchase = State()  # Создаем состояние Дата покупки
     communication_method = State()  # Создаем состояние Способ доставки
     short_code = State()  # Создаем состояние Короткий код
+
 
 @router.callback_query(F.data == "WILBEREES")
 async def WILBEREES_handlers(callback_query: types.CallbackQuery, state: FSMContext) -> None:
@@ -251,7 +252,6 @@ async def phone_number(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
@@ -285,7 +285,6 @@ async def mail(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')
@@ -319,7 +318,6 @@ async def mail(message: Message, state: FSMContext):
     data = await state.get_data()
     product_code = data.get('product_code')
     order_number = data.get('order_number')
-    # product_photo = data.get('product_photo')
     full_name = data.get('FULL_NAME')
     tipe_shop = data.get('tipe_shop')
     date_of_purchase = data.get('date_of_purchase')

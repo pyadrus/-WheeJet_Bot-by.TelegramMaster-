@@ -26,7 +26,7 @@ async def check_out_the_warranty_handlers(callback_query: types.CallbackQuery) -
                            disable_web_page_preview=True)
 
 
-class Formedit_check_out_the_warranty(StatesGroup):
+class FormeditCheckOutTheWarranty(StatesGroup):
     text_edit_check_out_the_warranty = State()
 
 
@@ -37,10 +37,10 @@ async def edit_instructions(message: Message, state: FSMContext):
         await message.reply("У вас нет прав на выполнение этой команды.")
         return
     await message.answer("Введите новый текст, используя разметку HTML.")
-    await state.set_state(Formedit_check_out_the_warranty.text_edit_check_out_the_warranty)
+    await state.set_state(FormeditCheckOutTheWarranty.text_edit_check_out_the_warranty)
 
 
-@router.message(Formedit_check_out_the_warranty.text_edit_check_out_the_warranty)
+@router.message(FormeditCheckOutTheWarranty.text_edit_check_out_the_warranty)
 async def update_info(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
     text = message.html_text

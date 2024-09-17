@@ -26,7 +26,7 @@ async def check_the_warranty_card_handlers(callback_query: types.CallbackQuery) 
                            )
 
 
-class Formedit_check_the_warranty_card(StatesGroup):
+class FormeditCheckTheWarrantyCard(StatesGroup):
     text_edit_check_the_warranty_card = State()
 
 
@@ -37,10 +37,10 @@ async def edit_check_the_warranty_card(message: Message, state: FSMContext):
         await message.reply("У вас нет прав на выполнение этой команды.")
         return
     await message.answer("Введите новый текст, используя разметку HTML.")
-    await state.set_state(Formedit_check_the_warranty_card.text_edit_check_the_warranty_card)
+    await state.set_state(FormeditCheckTheWarrantyCard.text_edit_check_the_warranty_card)
 
 
-@router.message(Formedit_check_the_warranty_card.text_edit_check_the_warranty_card)
+@router.message(FormeditCheckTheWarrantyCard.text_edit_check_the_warranty_card)
 async def update_info(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
     text = message.html_text

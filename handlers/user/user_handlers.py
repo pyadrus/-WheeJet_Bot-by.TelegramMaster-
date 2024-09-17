@@ -47,7 +47,7 @@ async def instructions_handlers(callback_query: types.CallbackQuery) -> None:
                            )
 
 
-class Formedit_main_menu(StatesGroup):
+class FormeditMainMenu(StatesGroup):
     text_edit_main_menu = State()
 
 
@@ -58,10 +58,10 @@ async def edit_main_menu(message: Message, state: FSMContext):
         await message.reply("У вас нет прав на выполнение этой команды.")
         return
     await message.answer("Введите новый текст, используя разметку HTML.")
-    await state.set_state(Formedit_main_menu.text_edit_main_menu)
+    await state.set_state(FormeditMainMenu.text_edit_main_menu)
 
 
-@router.message(Formedit_main_menu.text_edit_main_menu)
+@router.message(FormeditMainMenu.text_edit_main_menu)
 async def update_info(message: Message, state: FSMContext):
     """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
     text = message.html_text
