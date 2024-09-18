@@ -122,7 +122,7 @@ async def get_users_get_photos_goods(message: types.Message, state: FSMContext):
     """Получение данных пользователей, запускающих бота"""
     await state.clear()  # Завершаем текущее состояние машины состояний
     try:
-        if message.from_user.id not in [535185511, 301634256, 244948554]:
+        if message.from_user.id not in [535185511, 301634256, 244948554, 496261899]:
             await message.reply('У вас нет доступа к этой команде.')
             return
         files = create_zip_archive_photos_goods()  # Создание ZIP-файла
@@ -159,7 +159,7 @@ async def get_users_who_launched_the_bot(message: types.Message, state: FSMConte
     """Получение данных пользователей, запускающих бота"""
     await state.clear()  # Завершаем текущее состояние машины состояний
     try:
-        if message.from_user.id not in [535185511, 301634256, 244948554]:
+        if message.from_user.id not in [535185511, 301634256, 244948554, 496261899]:
             await message.reply('У вас нет доступа к этой команде.')
             return
         files = create_zip_archive()  # Создание ZIP-файла
@@ -184,7 +184,7 @@ async def get_users_who_launched_the_bot(message: types.Message, state: FSMConte
     """Получение данных пользователей, запускающих бота"""
     await state.clear()  # Завершаем текущее состояние машины состояний
     try:
-        if message.from_user.id not in [535185511, 301634256, 244948554]:
+        if message.from_user.id not in [535185511, 301634256, 244948554, 496261899]:
             await message.reply('У вас нет доступа к этой команде.')
             return
         orders = reading_from_database()
