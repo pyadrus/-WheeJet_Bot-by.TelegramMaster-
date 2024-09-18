@@ -1,5 +1,7 @@
+import asyncio
 import os
 import uuid
+from docx2pdf import convert
 
 from aiogram import types, F
 from aiogram.filters import Command
@@ -267,11 +269,13 @@ async def phone_number(message: Message, state: FSMContext):
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
-    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
+
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, files_dog)
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
     await state.clear()
-    file = FSInputFile(files_dog)
+    doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
+    await asyncio.sleep(2)
+    file = FSInputFile(f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await bot.send_document(message.from_user.id, document=file, caption=response_message,
                             parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
 
@@ -300,11 +304,13 @@ async def mail(message: Message, state: FSMContext):
                                                         full_name, contact, communication_method, date_of_purchase,
                                                         tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
-    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
+
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, files_dog)
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
     await state.clear()
-    file = FSInputFile(files_dog)
+    doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
+    await asyncio.sleep(2)
+    file = FSInputFile(f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await bot.send_document(message.from_user.id, document=file, caption=response_message,
                             parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
 
@@ -333,13 +339,19 @@ async def mail(message: Message, state: FSMContext):
                                                         communication_method,
                                                         date_of_purchase, tipe_shop, short_code)
     file_dog = f'form/Гарантийный_талон.docx'
-    files_dog = f'completed_form/Гарантийный_талон_{short_code}.docx'
+
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, files_dog)
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
     await state.clear()
-    file = FSInputFile(files_dog)
+    doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
+    await asyncio.sleep(2)
+    file = FSInputFile(f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await bot.send_document(message.from_user.id, document=file, caption=response_message,
                             parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
+
+
+def doc2pdf_libreoffice(input_docx, output_pdf):
+    convert(input_docx, output_pdf)
 
 
 def filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,

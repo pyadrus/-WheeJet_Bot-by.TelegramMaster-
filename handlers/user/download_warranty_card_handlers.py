@@ -14,7 +14,7 @@ from system.dispatcher import bot, dp, router
 
 def find_file_by_code(path, code):
     # Формируем шаблон имени файла, который будем искать
-    file_pattern = '*' + code + '.docx'
+    file_pattern = '*' + code + '.pdf'
     # Используем функцию glob.glob для поиска всех файлов, соответствующих шаблону
     files = glob.glob(os.path.join(path, file_pattern))
     if len(files) == 0:
