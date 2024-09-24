@@ -8,7 +8,7 @@ from aiogram.types import FSInputFile
 from aiogram.types import Message
 from loguru import logger
 
-from keyboards.keyboards import back_to_main_menu_keyboard
+from keyboards.keyboards import back_to_main_menu_keyboard, back_to_main_menu_keyboard_garan
 from system.dispatcher import bot, dp, router
 
 
@@ -61,7 +61,7 @@ async def phone_number(message: Message, state: FSMContext):
         file = FSInputFile(files)
         response_message = f"Гарантийный талон № {contact}"
         await bot.send_document(message.from_user.id, document=file, caption=response_message,
-                                parse_mode="HTML", reply_markup=back_to_main_menu_keyboard())  # Отправка файла пользователю
+                                parse_mode="HTML", reply_markup=back_to_main_menu_keyboard_garan())  # Отправка файла пользователю
 
 
 def register_download_warranty_card_handlers():

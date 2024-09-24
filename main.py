@@ -10,6 +10,7 @@ from handlers.user.check_the_warranty_card_handlers import register_check_the_wa
 from handlers.user.download_warranty_card_handlers import register_download_warranty_card_handlers
 from handlers.user.guarantee_chek_handlers import register_guarantee_chek_handlers
 from handlers.user.instructions_handlers import register_instructions_handlers
+from handlers.user.payment_handlers.payment_handlers import register_payment_handlers
 from handlers.user.user_handlers import register_greeting_user_handler
 from system.dispatcher import dp, bot
 
@@ -25,6 +26,7 @@ async def main() -> None:
     register_guarantee_chek_handlers()  # Обработчик команды /i_accept_the_terms_fill_out_the_form
     register_check_the_warranty_card_handlers()  # Обработчик команды /check_the_warranty_card
     register_download_warranty_card_handlers()
+    register_payment_handlers() # Оплата гарантийного талона на 2 - 3 года
 
 
 if __name__ == "__main__":
