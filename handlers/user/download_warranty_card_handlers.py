@@ -47,6 +47,8 @@ async def download_warranty_card_handlers(callback_query: types.CallbackQuery, s
 
 @router.message(FormeditDownloadWarrantyCard.text_download_warranty_card)
 async def phone_number(message: Message, state: FSMContext):
+    """Обработчик нажатия на кнопку отправки гарантийного талона, пользователю Telegram бота"""
+
     contact = message.html_text
     logger.info(contact)
     await state.clear()

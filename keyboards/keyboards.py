@@ -49,6 +49,10 @@ def guarantee_chek_keyboard():
 def filled_data_keyboard():
     rows = [
         [InlineKeyboardButton(text='🧾 Заполнить второй гарантийный талон', callback_data='guarantee_chek')],
+
+        [InlineKeyboardButton(text='🧾 Расширенная гарантия 2 года - 1300 руб.', callback_data='extended_warranty_2_years')],
+        [InlineKeyboardButton(text='🧾 Расширенная гарантия 3 года - 2200 руб.', callback_data='extended_warranty_2_years')],
+
         [InlineKeyboardButton(text='🔗 Перейти в канал', url='https://t.me/wheejet_ru')],
         [InlineKeyboardButton(text='⬅️ Вернуться на главную страницу', callback_data='back_to_menu')],
     ]
