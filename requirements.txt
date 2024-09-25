@@ -7,3 +7,4 @@ openpyxl~=3.1.5
 shortuuid~=1.0.13
 docxtpl~=0.18.0
 docx2pdf~=0.1.8
+yookassa~=3.3.0
