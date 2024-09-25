@@ -30,9 +30,18 @@ def extended_warranty_2_years_continue_keyboard(url, id_pay):
     return check_the_warranty_card_keyboards
 
 
-def extended_warranty_3_years_continue_keyboard():
+def extended_warranty_3_years_continue_keyboard(url, id_pay):
+    """
+        Клавиатура для продолжения оплаты
+        :param url: url для перехода на страницу оплаты
+        :param id_pay: id оплаты (проверка оплаты)
+        """
+
     rows = [
-        [InlineKeyboardButton(text='Продолжить', callback_data='extended_warranty_3_years_continue')],
+        [
+            InlineKeyboardButton(text='Продолжить', url=url),
+            InlineKeyboardButton(text='Проверить оплату', callback_data=f"check_service3_{id_pay}"),
+        ],
         [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')]
     ]
     check_the_warranty_card_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
@@ -42,5 +51,3 @@ def extended_warranty_3_years_continue_keyboard():
 
 if __name__ == '__main__':
     back_to_main_menu_keyboard_garan()
-    extended_warranty_2_years_continue_keyboard()
-    extended_warranty_3_years_continue_keyboard()
