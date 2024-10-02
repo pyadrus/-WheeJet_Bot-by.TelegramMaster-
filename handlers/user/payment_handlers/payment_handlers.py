@@ -1,16 +1,26 @@
+import asyncio
 import json
 import sqlite3
 
 from aiogram import types, F
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.types import FSInputFile
+from aiogram.types import Message
 from loguru import logger
 from yookassa import Configuration, Payment
 
+from database.database import get_customer_by_warranty_number
+from handlers.user.guarantee_chek_handlers import filling_data_hourly_rate
+from keyboards.keyboards import filled_data_keyboard
 from keyboards.payment_keyboards import extended_warranty_2_years_continue_keyboard, \
     extended_warranty_3_years_continue_keyboard
 from system.dispatcher import bot, dp, router, SECRET_KEY, ACCOUNT_ID, ADMIN_CHAT_ID
 from system.working_with_files import load_bot_info
 
+
+class PaymentYookassaProgramSetupService1Years(StatesGroup):
+    new_guarantee_chek_1_years = State()
 
 @router.callback_query(F.data == "extended_warranty_2_years")
 async def extended_warranty_2_years_handlers(callback_query: types.CallbackQuery) -> None:
@@ -59,10 +69,62 @@ async def check_payment_program_setup_service(callback_query: types.CallbackQuer
                                                            f"Приобрел 'Дополнительную гарантию на 2 года'")
 
         await bot.send_message(callback_query.from_user.id,
-                               "Оплата прошла успешно‼️ \n"
+                               "Оплата прошла успешно‼️ \n Введите номер гарантийного талона, который был выдан ранее, для актуализации данных\n"
                                "Для возврата в начальное меню, нажмите: /start")
+        await state.set_state(PaymentYookassaProgramSetupService1Years.new_guarantee_chek_1_years)
     else:
         await bot.send_message(callback_query.message.chat.id, "Payment failed.")
+
+@router.message(PaymentYookassaProgramSetupService1Years.new_guarantee_chek_1_years)
+async def new_guarantee_chek_1_years_handlers(message: Message, state: FSMContext):
+    """Обработчик текстовых сообщений (для админа, чтобы обновить информацию)"""
+    text = message.text
+
+    logger.info(text)
+
+    customer = get_customer_by_warranty_number(warranty_number_value=text)
+
+    if customer:
+
+        telegram_id = customer.telegram_id,
+        telegram_username = customer.telegram_username,
+        product_code = customer.product_code,
+        order_number = customer.order_number,
+        product_photo = customer.product_photo,
+        full_name = customer.full_name,
+        contact = customer.contact,
+        communication_method = customer.communication_method,
+        date_of_purchase = customer.date_of_purchase,
+        tipe_shop = customer.tipe_shop,
+        warranty_number = customer.warranty_number  # Номер гарантийного талона
+
+        print(f"Найдено: {telegram_id}, {telegram_username}, {product_code}, {order_number}, {product_photo}, {full_name}, {contact}, {communication_method}, {date_of_purchase}, {tipe_shop}, {warranty_number}")
+    else:
+        print("Запись не найдена.")
+
+    response_message = f"Данные гарантийного талона {telegram_id[0]}, {telegram_username[0]}, {product_code[0]}, {order_number[0]}, {product_photo[0]}, {full_name[0]}, {contact[0]}, {communication_method[0]}, {date_of_purchase[0]}, {tipe_shop[0]}, {warranty_number[0]}"
+
+    file_dog = f'form/Гарантийный_талон_2.docx'
+
+    filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
+                             warranty_number, f'completed_form/Гарантийный_талон_{warranty_number}_2.docx')
+    await state.clear()
+
+    import subprocess
+
+    def docx_to_pdf(input_path, output_path):
+        subprocess.run(['libreoffice', '--headless', '--convert-to', 'pdf', input_path, '--outdir', output_path])
+
+    docx_to_pdf(f'completed_form/Гарантийный_талон_{warranty_number}_2.docx',
+                f'completed_form/Гарантийный_талон_{warranty_number}_2.pdf')
+
+    # doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{warranty_number}_2.docx',
+    #                     f'completed_form/Гарантийный_талон_{warranty_number}_2.pdf')
+    await asyncio.sleep(2)
+    file = FSInputFile(f'completed_form/Гарантийный_талон_{warranty_number}_2.pdf')
+    await bot.send_document(message.from_user.id, document=file, caption=response_message,
+                            parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
+
 
 def payment_yookassa_program_setup_service():
     """

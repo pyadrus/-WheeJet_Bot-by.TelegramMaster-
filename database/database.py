@@ -82,3 +82,19 @@ def recording_user_data_of_the_launched_bot(user_id, user_name, user_first_name,
         user_date=user_date,
     )
     user_start.save()
+
+
+def get_customer_by_warranty_number(warranty_number_value):
+    """
+    Находит запись в базе данных по номеру гарантийного талона и возвращает всю информацию о покупателе.
+
+    :param warranty_number_value: Номер гарантийного талона.
+    :return: Запись о покупателе, если она найдена, иначе None.
+    """
+    # try:
+        # Поиск строки в базе данных по номеру гарантийного талона
+    customer = Customer.get(Customer.warranty_number == warranty_number_value)
+    return customer
+    # except Customer.DoesNotExist:
+    #     Возвращает None, если запись не найдена
+    #     return None
