@@ -355,7 +355,7 @@ def doc2pdf_libreoffice(input_docx, output_pdf):
 
 
 def filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             warranty_card_number, files_dog):
+                             warranty_card_number, files_dog, years):
     doc = DocxTemplate(file_dog)
     context = {
         'product_code': f"{product_code}",  # Артикул
@@ -363,7 +363,8 @@ def filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase
         'date_of_purchase': f"{date_of_purchase}",  # Дата покупки
         'communication_method': f"{communication_method}",  # Способ связи
         'contact': f"{contact}",  # Контакт для связи
-        'warranty_card_number': f"{warranty_card_number}",  # Контакт для связи
+        'warranty_card_number': f"{warranty_card_number}",  # Гарантийный Талон №
+        'years': f"{years}",
     }
     doc.render(context)
     doc.save(files_dog)

@@ -60,10 +60,6 @@ def filled_data_keyboard():
     return filled_data_keyboards
 
 
-
-
-
-
 def back_to_main_menu_keyboard():
     rows = [
         [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')]

@@ -1,3 +1,4 @@
+import asyncio
 import glob
 import os
 
@@ -8,7 +9,10 @@ from aiogram.types import FSInputFile
 from aiogram.types import Message
 from loguru import logger
 
+from database.database import get_customer_by_warranty_number
+from handlers.user.guarantee_chek_handlers import filling_data_hourly_rate, doc2pdf_libreoffice
 from keyboards.keyboards import back_to_main_menu_keyboard
+from keyboards.keyboards import filled_data_keyboard
 from keyboards.payment_keyboards import back_to_main_menu_keyboard_garan
 from system.dispatcher import bot, dp, router
 
@@ -57,6 +61,45 @@ async def phone_number(message: Message, state: FSMContext):
     files = find_file_by_code('completed_form', contact)
     if files is None:
         await message.answer("К сожалению, Ваш гарантийный талон еще не оформлен.", reply_markup=back_to_main_menu_keyboard())
+
+        customer = get_customer_by_warranty_number(warranty_number_value=contact)
+
+        if customer:
+
+            telegram_id = customer.telegram_id,
+            telegram_username = customer.telegram_username,
+            product_code = customer.product_code,
+            order_number = customer.order_number,
+            product_photo = customer.product_photo,
+            full_name = customer.full_name,
+            contact = customer.contact,
+            communication_method = customer.communication_method,
+            date_of_purchase = customer.date_of_purchase,
+            tipe_shop = customer.tipe_shop,
+            warranty_number = customer.warranty_number  # Номер гарантийного талона
+
+            print(f"Найдено: {telegram_id}, {telegram_username}, {product_code}, {order_number}, {product_photo}, {full_name}, {contact}, {communication_method}, {date_of_purchase}, {tipe_shop}, {warranty_number}")
+        else:
+            print("Запись не найдена.")
+
+        # Отправьте пользователю сообщение со всей собранной информацией
+        response_message = (f"🤖 Благодарю за предоставленную Информацию!\n\n"
+    
+                            f"Номер гарантийного талона: {warranty_number}\n"  # Артикул товара
+                            )
+
+        file_dog = f'form/Гарантийный_талон.docx'
+
+        filling_data_hourly_rate(file_dog, product_code[0], full_name[0], date_of_purchase[0], communication_method[0], contact[0],
+                                 warranty_number, f'completed_form/Гарантийный_талон_{warranty_number}.docx', '1 год')
+        await state.clear()
+        doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{warranty_number}.docx',
+                            f'completed_form/Гарантийный_талон_{warranty_number}.pdf')
+        await asyncio.sleep(2)
+        file = FSInputFile(f'completed_form/Гарантийный_талон_{warranty_number}.pdf')
+        await bot.send_document(message.from_user.id, document=file, caption=response_message,
+                                parse_mode="HTML", reply_markup=filled_data_keyboard())  # Отправка файла пользователю
+
     else:
         logger.info(files)  # Выводим первый найденный файл в папке 'completed_form'
         file = FSInputFile(files)

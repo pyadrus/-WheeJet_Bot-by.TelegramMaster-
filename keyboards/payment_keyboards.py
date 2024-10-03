@@ -1,3 +1,4 @@
+from aiogram.client.session.middlewares.request_logging import logger
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
@@ -22,7 +23,7 @@ def extended_warranty_2_years_continue_keyboard(url, id_pay):
     rows = [
         [
             InlineKeyboardButton(text='Продолжить', url=url),
-            InlineKeyboardButton(text='Проверить оплату', callback_data=f"check_service_{id_pay}"),
+            InlineKeyboardButton(text='Проверить оплату', callback_data=f"two_years_{id_pay}"),
         ],
         [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')]
     ]
@@ -30,22 +31,7 @@ def extended_warranty_2_years_continue_keyboard(url, id_pay):
     return check_the_warranty_card_keyboards
 
 
-def extended_warranty_3_years_continue_keyboard(url, id_pay):
-    """
-        Клавиатура для продолжения оплаты
-        :param url: url для перехода на страницу оплаты
-        :param id_pay: id оплаты (проверка оплаты)
-        """
 
-    rows = [
-        [
-            InlineKeyboardButton(text='Продолжить', url=url),
-            InlineKeyboardButton(text='Проверить оплату', callback_data=f"check_service3_{id_pay}"),
-        ],
-        [InlineKeyboardButton(text='🔙 Назад в меню', callback_data='back_to_menu')]
-    ]
-    check_the_warranty_card_keyboards = InlineKeyboardMarkup(inline_keyboard=rows)
-    return check_the_warranty_card_keyboards
 
 
 
