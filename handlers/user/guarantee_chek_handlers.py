@@ -271,7 +271,7 @@ async def phone_number(message: Message, state: FSMContext):
     file_dog = f'form/Гарантийный_талон.docx'
 
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx', '1 год')
     await state.clear()
     doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await asyncio.sleep(2)
@@ -306,7 +306,7 @@ async def mail(message: Message, state: FSMContext):
     file_dog = f'form/Гарантийный_талон.docx'
 
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx', '1 год')
     await state.clear()
     doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await asyncio.sleep(2)
@@ -341,7 +341,7 @@ async def mail(message: Message, state: FSMContext):
     file_dog = f'form/Гарантийный_талон.docx'
 
     filling_data_hourly_rate(file_dog, product_code, full_name, date_of_purchase, communication_method, contact,
-                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx')
+                             short_code, f'completed_form/Гарантийный_талон_{short_code}.docx', '1 год')
     await state.clear()
     doc2pdf_libreoffice(f'completed_form/Гарантийный_талон_{short_code}.docx', f'completed_form/Гарантийный_талон_{short_code}.pdf')
     await asyncio.sleep(2)
