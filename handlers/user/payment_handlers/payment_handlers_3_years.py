@@ -134,17 +134,26 @@ def payment_yookassa_program_setup_service_3():
     Configuration.secret_key = SECRET_KEY
 
     payment = Payment.create(
-        {"amount": {"value": 2200.00, "currency": "RUB"}, "capture": True,
-         "confirmation": {"type": "redirect", "return_url": "https://t.me/teeest_paaay_bot"},
+        {
+            "amount": {
+                "value": 2200.00, "currency": "RUB"
+                }, "capture": True,
+         "confirmation": {
+             "type": "redirect", 
+             "return_url": "https://t.me/WheeJet_Bot"
+             },
          "description": "Расширенная гарантия 3 года",
          "metadata": {'order_number': '1'},
-         "receipt": {"customer": {"email": "zh.vitaliy92@yandex.ru"},
+         "receipt": {"customer":
+                      {"email": "Tim.kylikoff@gmail.com"},
                      "items": [
                          {
                              "description": "Расширенная гарантия 3 года ",  # Название товара
                              "quantity": "1",
                              "amount": {"value": 2200.00, "currency": "RUB"},  # Сумма и валюта
-                             "vat_code": "1"}]}})
+                             "vat_code": "1", 
+                             "payment_mode": "full_payment", 
+                    "payment_subject": "commodity", }]}})
 
     payment_data = json.loads(payment.json())
     payment_id = payment_data['id']

@@ -19,6 +19,10 @@ from system.working_with_files import save_bot_info
 async def user_start_handler(message: Message) -> None:
     user_id = message.from_user.id
     user_name = message.from_user.username
+
+    if not user_name:
+        user_name = ''  # Установим пустую строку вместо None
+
     user_first_name = message.from_user.first_name
     user_last_name = message.from_user.last_name
     if message.from_user.last_name is None:
