@@ -19,17 +19,19 @@ logger.add("logs/log.log", retention="1 days", enqueue=True)  # Логирова
 
 
 async def main() -> None:
-    await dp.start_polling(bot)
-    register_payment_handlers_3_years() # Оплата гарантийника 3 года
-    register_greeting_user_handler()  # Обработчик команды /start
-    register_greeting_admin_handler()  # Обработчик команды /admin_start
-    register_instructions_handlers()  # Обработчик команды /instructions
-    register_check_out_the_warranty_handlers()  # Обработчик команды /check_out_the_warranty
-    register_guarantee_chek_handlers()  # Обработчик команды /i_accept_the_terms_fill_out_the_form
-    register_check_the_warranty_card_handlers()  # Обработчик команды /check_the_warranty_card
-    register_download_warranty_card_handlers()
-    register_payment_handlers() # Оплата гарантийного талона на 2 - 3 года
-
+    try:
+        await dp.start_polling(bot)
+        register_payment_handlers_3_years()  # Оплата гарантийника 3 года
+        register_greeting_user_handler()  # Обработчик команды /start
+        register_greeting_admin_handler()  # Обработчик команды /admin_start
+        register_instructions_handlers()  # Обработчик команды /instructions
+        register_check_out_the_warranty_handlers()  # Обработчик команды /check_out_the_warranty
+        register_guarantee_chek_handlers()  # Обработчик команды /i_accept_the_terms_fill_out_the_form
+        register_check_the_warranty_card_handlers()  # Обработчик команды /check_the_warranty_card
+        register_download_warranty_card_handlers()
+        register_payment_handlers()  # Оплата гарантийного талона на 2 - 3 года
+    except Exception as e:
+        logger.error(f"Ошибка: {e}")
 
 
 if __name__ == "__main__":
